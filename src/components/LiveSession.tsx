@@ -8,10 +8,11 @@ import PDFViewer from './PDFViewer';
 interface LiveSessionProps {
     pdfText: string;
     pdfFile: File;
+    apiKey: string;
     onDisconnect: () => void;
 }
 
-const LiveSession: React.FC<LiveSessionProps> = ({ pdfText, pdfFile }) => {
+const LiveSession: React.FC<LiveSessionProps> = ({ pdfText, pdfFile, apiKey }) => {
     // --- Gemini Live State ---
     const [isConnected, setIsConnected] = useState(false);
     const [isMicOn, setIsMicOn] = useState(true);
@@ -153,7 +154,7 @@ const LiveSession: React.FC<LiveSessionProps> = ({ pdfText, pdfFile }) => {
             setStatus('Connecting to Gemini...');
 
             // 3. Initialize Gemini Client
-            const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_API_KEY });
+            const ai = new GoogleGenAI({ apiKey });
 
             // 4. Connect Session
             const safeContext = pdfText.slice(0, 50000);

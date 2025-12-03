@@ -1,10 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BookOpen, Sparkles } from 'lucide-react';
 import PDFUploader from './components/PDFUploader';
 import LiveSession from './components/LiveSession';
+import ApiKeyInput from './components/ApiKeyInput';
 
 const App: React.FC = () => {
   const [pdfData, setPdfData] = useState<{ file: File, text: string } | null>(null);
+  const [apiKey, setApiKey] = useState<string | null>(null);
+
+  // Check for stored API key on mount
+  useEffect(() => {
+    const storedKey = localStorage.getItem('gemini_api_key');
+    if (storedKey) {
+      setApiKey(storedKey);
+    }
+  }, []);
 
   const loadExamplePDF = async () => {
     try {
@@ -22,6 +32,11 @@ const App: React.FC = () => {
       alert('Failed to load example PDF');
     }
   };
+
+  // Show API key input if no key is set
+  if (!apiKey) {
+    return <ApiKeyInput onApiKeySet={setApiKey} />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">
@@ -91,6 +106,7 @@ const App: React.FC = () => {
               <LiveSession
                 pdfText={pdfData.text}
                 pdfFile={pdfData.file}
+                apiKey={apiKey}
                 onDisconnect={() => { }}
               />
             </div>
